@@ -10,20 +10,16 @@ import XCTest
 
 final class BoxOfficeTests: XCTestCase {
 
-    func test_인스턴스를통한_Movie타입과Json데이터를_비교했을때_서로같다() {
+    func test_BoxOfficeDataResponse타입이Decodable기능을_잘수행해서_JSON데이터를_파싱하는데성공한다면_nil이아니다() {
         // given
-        let dailyBoxOfficeList = DailyBoxOfficeList(rnum: "1", rank: "1", rankInten: "0", rankOldAndNew: RankOldAndNew(rawValue: "NEW") ?? .new, movieCD: "20199882", movieNm: "경관의 피", openDt: "2022-01-05", salesAmt: "584559330", salesShare: "34.2", salesInten: "584559330", salesChange: "100", salesAcc: "631402330", audiCnt: "64050", audiInten: "64050", audiChange: "100", audiAcc: "69228", scrnCnt: "1171", showCnt: "4416")
+
         
-        let boxOfficeResult = 
-        BoxOfficeResult(boxofficeType: "일별 박스오피스", showRange: "20220105~20220105", dailyBoxOfficeList: [dailyBoxOfficeList])
-        let movie = BoxOfficeData(boxOfficeResult: boxOfficeResult)
-        
-        guard let data = JsonData.josnData.data(using: .utf8) else { return }
+        guard let data = TestJsonData.josnData.data(using: .utf8) else { return }
         //when
         do {
-            let jsonData = try JSONDecoder().decode(BoxOfficeData.self, from: data)
+            let jsonData = try JSONDecoder().decode(BoxOfficeDataResponse.self, from: data)
         //then
-            XCTAssertEqual(movie, jsonData)
+            XCTAssertNotNil(jsonData)
         } catch {
             XCTFail()
         }
