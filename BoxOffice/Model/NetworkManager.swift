@@ -9,7 +9,7 @@ struct NetworkManager {
         self.urlSession = urlSession
     }
     
-    func fetchData<T: Codable>(url: String, parse: @escaping (Data) throws -> T, completion: @escaping (T?, Error?) -> Void) {
+    func fetchData<T: Decodable>(url: String, parse: @escaping (Data) throws -> T, completion: @escaping (T?, Error?) -> Void) {
         guard let url = URL(string: url) else {
             completion(nil, FetchError.invalidURL)
             return

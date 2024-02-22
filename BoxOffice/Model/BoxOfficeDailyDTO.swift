@@ -7,20 +7,34 @@
 
 import Foundation
 
-struct BoxOfficeDataResponse: Codable, Identifiable {
-    let id: String
-    let boxOfficeResult: BoxOfficeResult
-}
-
-// MARK: - BoxOfficeResult
-struct BoxOfficeResult: Codable, Identifiable {
+struct BoxOfficeResult: Decodable, Identifiable {
     let id: String
     let boxofficeType: String
     let showRange: String
     let dailyBoxOfficeList: [DailyBoxOfficeInfo]
+    
+    enum CodingKeys: String, CodingKey {
+        case boxOfficeResult
+    }
+    
+    enum NestedKeys: String, CodingKey {
+        case id
+        case boxofficeType
+        case showRange
+        case dailyBoxOfficeList
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let boxOfficeResult = try container.nestedContainer(keyedBy: NestedKeys.self, forKey: .boxOfficeResult)
+        self.id = try boxOfficeResult.decode(String.self, forKey: .id)
+        self.boxofficeType = try boxOfficeResult.decode(String.self, forKey: .boxofficeType)
+        self.showRange = try boxOfficeResult.decode(String.self, forKey: .showRange)
+        self.dailyBoxOfficeList = try boxOfficeResult.decode([DailyBoxOfficeInfo].self, forKey: .dailyBoxOfficeList)
+    }
 }
 
-// MARK: - DailyBoxOfficeList
 struct DailyBoxOfficeInfo: Codable, Identifiable {
     let id: String
     let number: String

@@ -37,11 +37,11 @@ final class NetworkManagerTests: XCTestCase {
         
         sut = .init(urlSession: URLSession(configuration: configuration))
         
-        let expectation: BoxOfficeDataResponse? = try? JSONDecoder().decode(BoxOfficeDataResponse.self, from: data)
-        var result: BoxOfficeDataResponse?
+        let expectation: BoxOfficeResult? = try? JSONDecoder().decode(BoxOfficeResult.self, from: data)
+        var result: BoxOfficeResult?
         
-        sut.fetchData(url: api) { (data) -> BoxOfficeDataResponse in
-            let decode = try JSONDecoder().decode(BoxOfficeDataResponse.self, from: data)
+        sut.fetchData(url: api) { (data) -> BoxOfficeResult in
+            let decode = try JSONDecoder().decode(BoxOfficeResult.self, from: data)
             return decode
         } completion: { response, error in
             result = response

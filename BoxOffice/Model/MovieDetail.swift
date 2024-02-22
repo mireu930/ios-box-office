@@ -1,15 +1,30 @@
 
 import Foundation
 
-struct MovieDetail: Codable, Identifiable {
-    let id: String
-    let movieInfoResult: MovieInfoResult
-}
-
-struct MovieInfoResult: Codable,Identifiable {
+struct MovieInfoResult: Decodable, Identifiable {
     let id: String
     let movieInfo: MovieInfo
     let source: String
+    
+    enum CodingKeys: String, CodingKey {
+        case movieInfoResult
+    }
+    
+    enum NestedKeys: String, CodingKey {
+        case id
+        case movieInfo
+        case source
+        
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let movieInfoResult = try container.nestedContainer(keyedBy: NestedKeys.self, forKey: .movieInfoResult)
+        self.id = try movieInfoResult.decode(String.self, forKey: .id)
+        self.movieInfo = try movieInfoResult.decode(MovieInfo.self, forKey: .movieInfo)
+        self.source = try movieInfoResult.decode(String.self, forKey: .source)
+    }
 }
 
 struct MovieInfo: Codable, Identifiable {
