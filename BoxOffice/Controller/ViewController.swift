@@ -22,6 +22,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         autoLayout()
         view.addSubview(collectionView)
+        title = Date().yesterday(format: "yyyy-MM-dd")
+        view.backgroundColor = .systemBackground
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.refreshControl = UIRefreshControl()
         collectionView.refreshControl?.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
@@ -55,5 +57,17 @@ extension ViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
+}
+
+extension Date {
+    func yesterday(format: String) -> String {
+        let yesterday = Date(timeIntervalSinceNow: -86400)
+        DateFormatter().dateFormat = format
+        let dateformat = DateFormatter()
+        dateformat.dateFormat = format
+        
+        guard let dateString = dateformat.string(for: yesterday) else { return ""}
+        
+        return dateString
+    }
 }
