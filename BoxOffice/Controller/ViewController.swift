@@ -8,6 +8,9 @@
 import UIKit
 
 class ViewController: UIViewController {
+    enum Section: Hashable {
+        case main
+    }
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -17,6 +20,8 @@ class ViewController: UIViewController {
         
         return collectionView
     }()
+    var movieList: [DailyBoxOfficeInfo] = []
+    var dataSource: UICollectionViewDiffableDataSource<Section, DailyBoxOfficeInfo>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +38,22 @@ class ViewController: UIViewController {
         
     }
     
+    @available(iOS 14.0, *)
+    private func configureDataSource() {
+            let cellRegistration = UICollectionView.CellRegistration<MovieCell, DailyBoxOfficeInfo> { cell, indexPath, item in
+                cell.movie = item
+            }
+        
+        dataSource = UICollectionViewDiffableDataSource<Section, DailyBoxOfficeInfo>(collectionView: collectionView) {
+            (collectionView: UICollectionView, indexPath: IndexPath, identifier: DailyBoxOfficeInfo) -> UICollectionViewCell? in
+
+                let cell = collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
+                                                                        for: indexPath,
+                                                                        item: identifier)
+            return cell
+        }
+    }
+    
     private func autoLayout() {
         view.addSubview(collectionView)
         
@@ -44,18 +65,6 @@ class ViewController: UIViewController {
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-    }
-}
-
-extension ViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? MovieCell else { return UICollectionViewCell() }
-        
-        return cell
     }
 }
 

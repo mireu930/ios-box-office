@@ -35,7 +35,7 @@ struct BoxOfficeResult: Decodable, Identifiable {
     }
 }
 
-struct DailyBoxOfficeInfo: Codable, Identifiable {
+struct DailyBoxOfficeInfo: Codable, Identifiable, Hashable {
     let id: String
     let number: String
     let rank: String
