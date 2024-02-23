@@ -29,6 +29,7 @@ class ViewController: UIViewController {
         view.addSubview(collectionView)
         title = Date().yesterday(format: "yyyy-MM-dd")
         view.backgroundColor = .systemBackground
+        configureDataSource()
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.refreshControl = UIRefreshControl()
         collectionView.refreshControl?.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
@@ -38,7 +39,6 @@ class ViewController: UIViewController {
         
     }
     
-    @available(iOS 14.0, *)
     private func configureDataSource() {
             let cellRegistration = UICollectionView.CellRegistration<MovieCell, DailyBoxOfficeInfo> { cell, indexPath, item in
                 cell.movie = item
