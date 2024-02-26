@@ -12,10 +12,13 @@ class ViewController: UIViewController {
         case main
     }
     private var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
+        let configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+        let layout = UICollectionViewCompositionalLayout.list(using: configuration)
+        let collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: layout
+        )
         
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
@@ -27,14 +30,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        autoLayout()
-        title = Date().yesterday(format: "yyyy-MM-dd")
-        view.backgroundColor = .systemBackground
         configureDataSource()
         fetchData()
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        collectionView.refreshControl = UIRefreshControl()
-        collectionView.refreshControl?.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        configureUI()
     }
     
     func fetchData() {
@@ -83,8 +81,21 @@ class ViewController: UIViewController {
        dataSource?.apply(snapshot, animatingDifferences: false)
    }
     
-    private func autoLayout() {
+    func configureUI() {
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addTarget(
+            self,
+            action: #selector(handleRefresh),
+            for: .valueChanged
+        )
         view.addSubview(collectionView)
+        view.backgroundColor = .systemBackground
+        self.title = Date().yesterday(format: "yyyy-MM-dd")
+        
+        autoLayout()
+    }
+    
+    private func autoLayout() {
         
         let safeArea = view.safeAreaLayoutGuide
         
@@ -96,6 +107,8 @@ class ViewController: UIViewController {
         ])
     }
 }
+
+
 
 extension Date {
     func yesterday(format: String) -> String {
