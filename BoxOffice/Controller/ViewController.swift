@@ -47,6 +47,7 @@ class ViewController: UIViewController {
             case .success(let data):
                 self.movieList = Decoder().decodeDailyBoxOfficeList(data)
                 DispatchQueue.main.async {
+                    self.applySnapshot()
                     self.collectionView.refreshControl?.endRefreshing()
                 }
             case .failure(let error):
@@ -73,6 +74,14 @@ class ViewController: UIViewController {
             return cell
         }
     }
+    
+    func applySnapshot() {
+       var snapshot = NSDiffableDataSourceSnapshot<Section, DailyBoxOfficeInfo>()
+       snapshot.appendSections([.main])
+       snapshot.appendItems(movieList, toSection: .main)
+       
+       dataSource?.apply(snapshot, animatingDifferences: false)
+   }
     
     private func autoLayout() {
         view.addSubview(collectionView)
