@@ -26,7 +26,7 @@ class ViewController: UIViewController {
     
     var networkManager = NetworkManager()
     var movieList: [DailyBoxOfficeInfo] = []
-    var dataSource: UICollectionViewDiffableDataSource<Section, DailyBoxOfficeInfo>!
+    var dataSource: UICollectionViewDiffableDataSource<Section, DailyBoxOfficeInfo>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +49,7 @@ class ViewController: UIViewController {
                     self.collectionView.refreshControl?.endRefreshing()
                 }
             case .failure(let error):
-                print("\(error.localizedDescription) 에러 1")
+                print(error.localizedDescription)
             }
         }
     }

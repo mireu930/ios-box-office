@@ -59,7 +59,7 @@ struct Decoder {
         do {
             movieList = try Decoder().parse(data: data, type: BoxOfficeDataResponse.self).boxOfficeResult.dailyBoxOfficeList
         } catch {
-            print("\(error.localizedDescription) 에러 2")
+            print(error.localizedDescription)
         }
         
         return movieList
