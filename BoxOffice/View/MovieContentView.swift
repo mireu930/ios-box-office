@@ -54,17 +54,31 @@ class MovieContentView: UIView, UIContentView {
             rankFluctuationLabel.text = "신작"
         } else if rankFluctuation == "0" {
             rankFluctuationLabel.text = rankFluctuation
+        } else if rankFluctuation.hasPrefix("-") {
+            rankFluctuationLabel.text = "▼"
+            rankFluctuationLabel.textColor = .blue
+        } else {
+            rankFluctuationLabel.text = "▲"
+            rankFluctuationLabel.textColor = .red
         }
     }
     
     func configureUI() {
+        addSubview(rankStackView)
+        addSubview(movieNameLabel)
+        addSubview(audienceCountLabel)
+        
         rankLabel.font = UIFont.preferredFont(forTextStyle: .largeTitle)
         rankLabel.adjustsFontForContentSizeCategory = true
+        
+        rankFluctuationLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        rankFluctuationLabel.adjustsFontForContentSizeCategory = true
         
         rankStackView.translatesAutoresizingMaskIntoConstraints = false
         rankStackView.axis = .vertical
         rankStackView.alignment = .center
         rankStackView.addArrangedSubview(rankLabel)
+        rankStackView.addArrangedSubview(rankFluctuationLabel)
         
         movieNameLabel.font = UIFont.preferredFont(forTextStyle: .title3)
         movieNameLabel.adjustsFontForContentSizeCategory = true
@@ -78,10 +92,6 @@ class MovieContentView: UIView, UIContentView {
     }
     
     func autoLayout() {
-        addSubview(rankStackView)
-        addSubview(movieNameLabel)
-        addSubview(audienceCountLabel)
-                   
         NSLayoutConstraint.activate([
             movieNameLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -10),
             movieNameLabel.leadingAnchor.constraint(equalTo: rankStackView.trailingAnchor, constant: 10),
