@@ -28,10 +28,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         autoLayout()
-        view.addSubview(collectionView)
         title = Date().yesterday(format: "yyyy-MM-dd")
         view.backgroundColor = .systemBackground
         configureDataSource()
+        fetchData()
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.refreshControl = UIRefreshControl()
         collectionView.refreshControl?.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
