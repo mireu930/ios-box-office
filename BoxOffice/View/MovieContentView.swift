@@ -55,10 +55,10 @@ class MovieContentView: UIView, UIContentView {
         } else if rankFluctuation == "0" {
             rankFluctuationLabel.text = rankFluctuation
         } else if rankFluctuation.hasPrefix("-") {
-            rankFluctuationLabel.text = "▼"
+            rankFluctuationLabel.text = "▼\(rankFluctuation.replacingOccurrences(of: "-", with: ""))"
             rankFluctuationLabel.textColor = .blue
         } else {
-            rankFluctuationLabel.text = "▲"
+            rankFluctuationLabel.text = "▲\(rankFluctuation)"
             rankFluctuationLabel.textColor = .red
         }
     }
