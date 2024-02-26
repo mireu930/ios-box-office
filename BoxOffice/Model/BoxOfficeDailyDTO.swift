@@ -7,36 +7,23 @@
 
 import Foundation
 
-struct BoxOfficeResult: Decodable, Identifiable {
-    let id: String
-    let boxofficeType: String
+struct BoxOfficeDataResponse: Codable {
+    let boxOfficeResult: BoxOfficeResult
+}
+
+struct BoxOfficeResult: Codable {
+    let boxOfficeType: String
     let showRange: String
     let dailyBoxOfficeList: [DailyBoxOfficeInfo]
     
     enum CodingKeys: String, CodingKey {
-        case boxOfficeResult
-    }
-    
-    enum NestedKeys: String, CodingKey {
-        case id
-        case boxofficeType
         case showRange
         case dailyBoxOfficeList
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        let boxOfficeResult = try container.nestedContainer(keyedBy: NestedKeys.self, forKey: .boxOfficeResult)
-        self.id = try boxOfficeResult.decode(String.self, forKey: .id)
-        self.boxofficeType = try boxOfficeResult.decode(String.self, forKey: .boxofficeType)
-        self.showRange = try boxOfficeResult.decode(String.self, forKey: .showRange)
-        self.dailyBoxOfficeList = try boxOfficeResult.decode([DailyBoxOfficeInfo].self, forKey: .dailyBoxOfficeList)
+        case boxOfficeType = "boxofficeType"
     }
 }
 
-struct DailyBoxOfficeInfo: Codable, Identifiable, Hashable {
-    let id: String
+struct DailyBoxOfficeInfo: Codable, Hashable {
     let number: String
     let rank: String
     let rankFluctuation: String
@@ -57,7 +44,6 @@ struct DailyBoxOfficeInfo: Codable, Identifiable, Hashable {
     let showCount: String
     
     enum CodingKeys: String, CodingKey {
-        case id
         case rank, rankOldAndNew, salesShare, salesChange
         case number = "rnum"
         case rankFluctuation = "rankInten"

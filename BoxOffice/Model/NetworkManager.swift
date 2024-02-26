@@ -9,30 +9,29 @@ struct NetworkManager {
         self.urlSession = urlSession
     }
     
-    func fetchData<T: Decodable>(url: String, parse: @escaping (Data) throws -> T, completion: @escaping (T?, Error?) -> Void) {
+    func fetchData(url: String, completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = URL(string: url) else {
-            completion(nil, FetchError.invalidURL)
+            completion(.failure(FetchError.invalidURL))
             return
         }
         
         urlSession.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                completion(nil, error)
+            if error != nil {
+                completion(.failure(FetchError.invalidData))
                 return
             }
             
             guard let response = response as? HTTPURLResponse,(200...299).contains(response.statusCode) else {
-                completion(nil, FetchError.invalidResponse)
+                completion(.failure(FetchError.invalidResponse))
                 return
             }
             
-            do {
-                guard let  data = data else { return }
-                let parseData = try parse(data)
-                completion(parseData, nil)
-            } catch {
-                completion(nil, FetchError.invalidData)
+            guard let data = data else {
+                completion(.failure(FetchError.invalidData))
+                return
             }
+           
+            completion(.success(data))
             
         }.resume()
     }
@@ -46,6 +45,24 @@ struct NetworkManager {
         ]
         
         return urlComponents.url
+    }
+}
+
+struct Decoder {
+    func parse<T: Decodable>(data: Data, type: T.Type) throws -> T {
+        return try JSONDecoder().decode(type, from: data)
+    }
+    
+    func decodeDailyBoxOfficeList(_ data: Data) -> [DailyBoxOfficeInfo] {
+        var movieList: [DailyBoxOfficeInfo] = []
+        
+        do {
+            movieList = try Decoder().parse(data: data, type: BoxOfficeDataResponse.self).boxOfficeResult.dailyBoxOfficeList
+        } catch {
+            print("\(error.localizedDescription) 에러 2")
+        }
+        
+        return movieList
     }
 }
 

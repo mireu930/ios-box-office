@@ -20,6 +20,8 @@ class ViewController: UIViewController {
         
         return collectionView
     }()
+    
+    var networkManager = NetworkManager()
     var movieList: [DailyBoxOfficeInfo] = []
     var dataSource: UICollectionViewDiffableDataSource<Section, DailyBoxOfficeInfo>!
     
@@ -35,8 +37,26 @@ class ViewController: UIViewController {
         collectionView.refreshControl?.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
     }
     
-    @objc func handleRefresh() {
+    func fetchData() {
+        let date = Date().yesterday(format: "yyyyMMdd")
+        let modifyUrl = networkManager.modifyUrlComponent(path: MovieOffice.DailyUrl)
+        guard let url = modifyUrl?.appending("targetDt", value: date)?.absoluteString else { return }
         
+        networkManager.fetchData(url: url) { response in
+            switch response {
+            case .success(let data):
+                self.movieList = Decoder().decodeDailyBoxOfficeList(data)
+                DispatchQueue.main.async {
+                    self.collectionView.refreshControl?.endRefreshing()
+                }
+            case .failure(let error):
+                print("\(error.localizedDescription) 에러 1")
+            }
+        }
+    }
+    
+    @objc func handleRefresh() {
+        fetchData()
     }
     
     private func configureDataSource() {

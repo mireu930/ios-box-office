@@ -1,34 +1,16 @@
 
 import Foundation
 
-struct MovieInfoResult: Decodable, Identifiable {
-    let id: String
-    let movieInfo: MovieInfo
-    let source: String
-    
-    enum CodingKeys: String, CodingKey {
-        case movieInfoResult
-    }
-    
-    enum NestedKeys: String, CodingKey {
-        case id
-        case movieInfo
-        case source
-        
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        let movieInfoResult = try container.nestedContainer(keyedBy: NestedKeys.self, forKey: .movieInfoResult)
-        self.id = try movieInfoResult.decode(String.self, forKey: .id)
-        self.movieInfo = try movieInfoResult.decode(MovieInfo.self, forKey: .movieInfo)
-        self.source = try movieInfoResult.decode(String.self, forKey: .source)
-    }
+struct MovieDetail: Codable {
+    let movieInfoResult: MovieInfoResult
 }
 
-struct MovieInfo: Codable, Identifiable {
-    let id: String
+struct MovieInfoResult: Codable {
+    let movieInfo: MovieInfo
+    let source: String
+}
+
+struct MovieInfo: Codable {
     let movieCode: String
     let movieName: String
     let movieEnglishName: String
@@ -48,7 +30,6 @@ struct MovieInfo: Codable, Identifiable {
     let staffs: [Staff]
     
     private enum CodingKeys: String, CodingKey {
-        case id
         case movieCode = "movieCd"
         case movieName = "movieNm"
         case movieEnglishName = "movieNmEn"
